@@ -1,0 +1,97 @@
+// C++ Implementation of the code
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+// Function to find length of
+// longest Subarray
+int longestSubarray(vector<int>& arr)
+{
+
+	// get size of input array
+	int n = arr.size();
+
+	// Initialize variable to store
+	// maximum length of subarray
+	int max_len = 0;
+
+	// Create unordered map to store the
+	// first index of each sum value
+	unordered_map<int, int> sum_dict;
+
+	// Create unordered map to store the
+	// first index of each prod value
+	unordered_map<int, int> prod_dict;
+
+	// Initialize variable to store current
+	// sum of elements in subarray
+
+	int curr_sum = 0;
+	// Initialize variable to store current
+	// product of elements in subarray
+	int curr_prod = 1;
+
+	// Loop through input array
+	for (int i = 0; i < n; i++) {
+
+		// Add current element
+		// to current sum
+		curr_sum += arr[i];
+
+		// Avoid multiplying by zero
+		if (arr[i] != 0) {
+
+			// Multiply current element
+			// to current product, if
+			// not equal to zero
+			curr_prod *= arr[i];
+		}
+
+		// If the current sum and
+		// product are equal, subarray
+		// from index 0 to i+1 is valid
+		if (curr_sum == curr_prod) {
+			max_len = max(max_len, i + 1);
+		}
+
+		// If the difference between the
+		// current sum and product is found
+		// in sum_dict, a valid
+		// subarray exists
+		else if (sum_dict.count(curr_sum - curr_prod)) {
+
+			max_len
+				= max(max_len,
+					i - sum_dict[curr_sum - curr_prod]);
+		}
+
+		// Store the first occurrence of
+		// current sum in sum_dict
+		if (sum_dict.count(curr_sum) == 0) {
+
+			sum_dict[curr_sum] = i;
+		}
+
+		// Store the first occurrence of
+		// current product in prod_dict
+		if (prod_dict.count(curr_prod) == 0) {
+
+			prod_dict[curr_prod] = i;
+		}
+	}
+
+	// Return maximum length of valid
+	// subarray
+	return max_len;
+}
+
+// Driver code
+int main()
+{
+	vector<int> arr1 = { 1, 2, 1, 2, 2, 5, 6, 24 };
+
+	// Function call
+	cout << longestSubarray(arr1) << endl;
+	return 0;
+}
